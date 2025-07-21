@@ -257,6 +257,4 @@ function Generate-ProfileReport {
     return $report
 }
 
-# Generate the report
-$profileReport = Generate-ProfileReport
-Write-Host "`nProfile report generation complete!" -ForegroundColor Green
+# Don't auto-execute when dot-sourced - let the caller run the function
