@@ -44,7 +44,7 @@ jobs:
       - name: Generate profile report
         shell: pwsh
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACTIVITY_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           # Import and run the profile report generator
           . ./activity-analyzer/src/Generate-ProfileReport.ps1

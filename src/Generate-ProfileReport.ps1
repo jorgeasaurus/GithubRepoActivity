@@ -18,7 +18,10 @@ param(
     [int]$TopReposCount = 6,
     
     [Parameter(Mandatory = $false)]
-    [switch]$IncludeLanguageChart
+    [switch]$IncludeLanguageChart,
+    
+    [Parameter(Mandatory = $false)]
+    [switch]$SkipCloneData
 )
 
 # Import required functions
