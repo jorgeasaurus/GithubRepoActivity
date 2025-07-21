@@ -68,7 +68,15 @@ function Generate-ProfileReport {
     
     # Get all activity data
     . "$PSScriptRoot\Get-AllActivity.ps1"
-    $tempJsonPath = Join-Path $env:TEMP "temp_activity_$(Get-Date -Format 'yyyyMMdd_HHmmss').json"
+    
+    # Use platform-appropriate temp directory
+    $tempDir = if ($IsWindows -or $PSVersionTable.PSVersion.Major -lt 6) {
+        $env:TEMP
+    } else {
+        "/tmp"
+    }
+    
+    $tempJsonPath = Join-Path $tempDir "temp_activity_$(Get-Date -Format 'yyyyMMdd_HHmmss').json"
     $activityData = Get-AllGitHubActivity -GitHubUsername $GitHubUsername -GitHubToken $GitHubToken -IncludePrivate:$IncludePrivate -OutputPath $tempJsonPath
     
     # Start building the markdown report
