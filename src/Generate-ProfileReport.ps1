@@ -67,7 +67,12 @@ function Generate-ProfileReport {
     Write-Host "Generating GitHub Profile Report for $GitHubUsername..." -ForegroundColor Cyan
     
     # Get all activity data
-    . "$PSScriptRoot\Get-AllActivity.ps1"
+    $scriptPath = Join-Path $PSScriptRoot "Get-AllActivity.ps1"
+    if (-not (Test-Path $scriptPath)) {
+        # Try alternative path for GitHub Actions
+        $scriptPath = Join-Path (Split-Path $PSScriptRoot) "src/Get-AllActivity.ps1"
+    }
+    . $scriptPath
     
     # Use platform-appropriate temp directory
     $tempDir = if ($IsWindows -or $PSVersionTable.PSVersion.Major -lt 6) {

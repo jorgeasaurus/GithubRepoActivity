@@ -22,7 +22,7 @@ param(
 )
 
 # Import required functions
-. "$PSScriptRoot\Get-GitHubCloneActivity.ps1"
+. (Join-Path $PSScriptRoot "Get-GitHubCloneActivity.ps1")
 
 function Get-GitHubRepoStats {
     param(
