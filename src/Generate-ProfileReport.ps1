@@ -251,7 +251,7 @@ function Generate-ProfileReport {
     Write-Host "Profile report saved to: $OutputPath" -ForegroundColor Green
     
     # Clean up temp file
-    if (Test-Path $tempJsonPath) {
+    if ($tempJsonPath -and (Test-Path $tempJsonPath)) {
         Remove-Item $tempJsonPath -Force
     }
     

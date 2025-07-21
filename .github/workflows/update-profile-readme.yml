@@ -46,11 +46,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Debug: Show current directory and contents
-          Write-Host "Current directory: $(Get-Location)"
-          Write-Host "Contents of activity-analyzer:"
-          Get-ChildItem -Path ./activity-analyzer -Recurse -Name
-          
           # Import and run the profile report generator
           . ./activity-analyzer/src/Generate-ProfileReport.ps1
           

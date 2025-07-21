@@ -215,11 +215,4 @@ function Get-AllGitHubActivity {
     return $output
 }
 
-# Main execution
-if ($GitHubToken -eq $null -and $env:GITHUB_TOKEN) {
-    $GitHubToken = $env:GITHUB_TOKEN
-}
-
-$activityData = Get-AllGitHubActivity
-
-Write-Host "`nActivity analysis complete!" -ForegroundColor Green
+# Don't auto-execute when dot-sourced - let the caller run the function
