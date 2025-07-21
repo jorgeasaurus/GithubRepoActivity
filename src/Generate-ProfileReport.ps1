@@ -18,9 +18,6 @@ param(
     [int]$TopReposCount = 6,
     
     [Parameter(Mandatory = $false)]
-    [switch]$IncludeLanguageChart,
-    
-    [Parameter(Mandatory = $false)]
     [switch]$SkipCloneData
 )
 
@@ -165,27 +162,8 @@ function Generate-ProfileReport {
         $report += "| [$repoName](https://github.com/$($_.Repository)) | $(Format-Number $_.TotalClones) | $(Format-Number $_.UniqueClones) |`n"
     }
     
-    # Language breakdown section
+    # Recent Activity section
     $report += @"
-
-## 💻 Language Distribution
-
-<div align="center">
-
-"@
-
-    # Create language badges
-    $languages = $activityData.Summary.LanguageBreakdown | Where-Object { $_.Name } | Select-Object -First 8
-    foreach ($lang in $languages) {
-        $color = Get-LanguageColor -Language $lang.Name
-        $percentage = [math]::Round(($lang.Count / $activityData.Summary.TotalRepositories) * 100, 1)
-        $encodedName = [System.Uri]::EscapeDataString($lang.Name)
-        $report += "![](https://img.shields.io/badge/$encodedName-$percentage%25-$color?style=flat-square&logo=$($lang.Name.ToLower())&logoColor=white) "
-    }
-    
-    $report += @"
-
-</div>
 
 ## 📅 Recent Activity
 
@@ -220,28 +198,6 @@ function Generate-ProfileReport {
         }
         
         $report += "| [$repoName](https://github.com/$($repo.Repository)) | $timeAgo | $languageBadge | ⭐ $(Format-Number $repo.Stars) |`n"
-    }
-    
-    # GitHub Streak and Contributions
-    $report += @"
-
-## 🔥 Contribution Stats
-
-<div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=$GitHubUsername&show_icons=true&theme=dark&hide_border=true&include_all_commits=true&count_private=$($IncludePrivate.ToString().ToLower())" alt="GitHub Stats" />
-</div>
-
-"@
-
-    # Optional language chart
-    if ($IncludeLanguageChart) {
-        $report += @"
-
-<div align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=$GitHubUsername&layout=compact&theme=dark&hide_border=true&langs_count=8" alt="Top Languages" />
-</div>
-
-"@
     }
     
     # Footer

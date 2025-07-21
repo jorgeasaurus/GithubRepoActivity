@@ -49,11 +49,10 @@ jobs:
           # Import and run the profile report generator
           . ./activity-analyzer/src/Generate-ProfileReport.ps1
           
-          # Generate the report with language chart
+          # Generate the report
           $reportContent = Generate-ProfileReport -GitHubUsername "${{ github.repository_owner }}" `
             -GitHubToken $env:GITHUB_TOKEN `
             -OutputPath "./profile-report-section.md" `
-            -IncludeLanguageChart `
             -TopReposCount 6
             
           # Verify the file was created
