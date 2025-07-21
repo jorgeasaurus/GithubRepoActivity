@@ -90,8 +90,8 @@ jobs:
       - name: Commit and push changes
         run: |
           cd profile-repo
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --local user.email "j0rg3@me.com"
+          git config --local user.name "jorgeasaurus"
           
           # Check if there are changes
           if [[ -n $(git status -s) ]]; then

@@ -25,6 +25,7 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+.claude/
 
 # PowerShell specific
 *.ps1xml

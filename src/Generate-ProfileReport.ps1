@@ -213,10 +213,6 @@ function Generate-ProfileReport {
 ## 🔥 Contribution Stats
 
 <div align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=$GitHubUsername&theme=dark&hide_border=true" alt="GitHub Streak Stats" />
-</div>
-
-<div align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=$GitHubUsername&show_icons=true&theme=dark&hide_border=true&include_all_commits=true&count_private=$($IncludePrivate.ToString().ToLower())" alt="GitHub Stats" />
 </div>
 
