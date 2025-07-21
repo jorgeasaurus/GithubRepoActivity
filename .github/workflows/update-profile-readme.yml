@@ -1,0 +1,127 @@
+name: Update Profile README
+
+on:
+  schedule:
+    # Run every day at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - '.github/workflows/update-profile-readme.yml'
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Checkout activity analyzer
+        uses: actions/checkout@v4
+        with:
+          path: activity-analyzer
+          
+      - name: Checkout profile repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/${{ github.repository_owner }}
+          token: ${{ secrets.PROFILE_TOKEN || secrets.GITHUB_TOKEN }}
+          path: profile-repo
+          
+      - name: Setup PowerShell
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https software-properties-common
+          wget -q "https://packages.microsoft.com/keys/microsoft.asc" -O- | sudo apt-key add -
+          sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-jammy-prod jammy main" > /etc/apt/sources.list.d/microsoft.list'
+          sudo apt-get update
+          sudo apt-get install -y powershell
+          
+      - name: Generate profile report
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Import and run the profile report generator
+          . ./activity-analyzer/src/Generate-ProfileReport.ps1
+          
+          # Generate the report with language chart
+          Generate-ProfileReport -GitHubUsername "${{ github.repository_owner }}" `
+            -GitHubToken $env:GITHUB_TOKEN `
+            -OutputPath "./profile-report-section.md" `
+            -IncludeLanguageChart `
+            -TopReposCount 6
+            
+      - name: Update README
+        shell: pwsh
+        run: |
+          $readmePath = "./profile-repo/README.md"
+          $reportPath = "./profile-report-section.md"
+          
+          # Read the current README
+          $readme = Get-Content $readmePath -Raw
+          
+          # Read the new report section
+          $newReport = Get-Content $reportPath -Raw
+          
+          # Define markers for the activity section
+          $startMarker = "<!-- GITHUB-ACTIVITY:START -->"
+          $endMarker = "<!-- GITHUB-ACTIVITY:END -->"
+          
+          # Check if markers exist
+          if ($readme -match "$startMarker[\s\S]*?$endMarker") {
+              # Replace existing section
+              $updatedReadme = $readme -replace "$startMarker[\s\S]*?$endMarker", "$startMarker`n$newReport`n$endMarker"
+          } else {
+              # Add markers and content at the end if they don't exist
+              Write-Host "Activity markers not found in README. Adding them..."
+              $updatedReadme = $readme.TrimEnd() + "`n`n$startMarker`n$newReport`n$endMarker`n"
+          }
+          
+          # Save the updated README
+          $updatedReadme | Out-File -FilePath $readmePath -Encoding UTF8 -NoNewline
+          
+          Write-Host "README.md has been updated with the latest activity report"
+          
+      - name: Commit and push changes
+        run: |
+          cd profile-repo
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Check if there are changes
+          if [[ -n $(git status -s) ]]; then
+            git add README.md
+            git commit -m "Update GitHub activity report - $(date +'%Y-%m-%d')"
+            git push
+            echo "✅ Profile README updated successfully!"
+          else
+            echo "ℹ️ No changes detected in README"
+          fi
+          
+      - name: Create job summary
+        shell: pwsh
+        run: |
+          @"
+          ## Profile README Update Summary
+          
+          ✅ **Status:** Profile README has been updated
+          📅 **Date:** $(Get-Date -Format "yyyy-MM-dd HH:mm:ss UTC" -AsUTC)
+          👤 **User:** ${{ github.repository_owner }}
+          
+          ### Instructions to use in your profile:
+          
+          1. Add these markers to your profile README.md:
+          \`\`\`markdown
+          <!-- GITHUB-ACTIVITY:START -->
+          <!-- GITHUB-ACTIVITY:END -->
+          \`\`\`
+          
+          2. The workflow will automatically update the content between these markers.
+          
+          3. Optionally, create a \`PROFILE_TOKEN\` secret with a personal access token that has \`repo\` scope for updating your profile repository.
+          "@ | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding UTF8

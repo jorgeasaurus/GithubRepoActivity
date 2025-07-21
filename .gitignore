@@ -1,0 +1,37 @@
+# Reports directory (keep the directory but not the contents)
+reports/*.json
+reports/*.csv
+
+# Keep the reports directory itself
+!reports/.gitkeep
+
+# Local test outputs
+*.csv
+*.json
+!package.json
+!package-lock.json
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# PowerShell specific
+*.ps1xml
+
+# Credentials and tokens (safety measure)
+*token*
+*secret*
+*.key
+.env
+token.ps1
