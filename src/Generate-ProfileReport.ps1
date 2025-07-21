@@ -250,8 +250,21 @@ function Generate-ProfileReport {
 "@
 
     # Save the report
-    $report | Out-File -FilePath $OutputPath -Encoding UTF8 -NoNewline
-    Write-Host "Profile report saved to: $OutputPath" -ForegroundColor Green
+    try {
+        $report | Out-File -FilePath $OutputPath -Encoding UTF8 -NoNewline -ErrorAction Stop
+        Write-Host "Profile report saved to: $OutputPath" -ForegroundColor Green
+        
+        # Verify file was created
+        if (Test-Path $OutputPath) {
+            $fileInfo = Get-Item $OutputPath
+            Write-Host "Report file size: $($fileInfo.Length) bytes" -ForegroundColor Gray
+        } else {
+            throw "File was not created at $OutputPath"
+        }
+    } catch {
+        Write-Error "Failed to save report: $_"
+        throw
+    }
     
     # Clean up temp file
     if ($tempJsonPath -and (Test-Path $tempJsonPath)) {

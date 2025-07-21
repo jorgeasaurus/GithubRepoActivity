@@ -35,14 +35,21 @@ I'm a passionate developer working on various projects.
 ...
 ```
 
-### 3. Set Up GitHub Secrets (Optional)
+### 3. Set Up GitHub Secrets
 
-If your profile repository is private or you want to include private repository stats:
+You'll need to set up one or two secrets:
 
-1. Go to your activity analyzer repository settings
-2. Navigate to Secrets and variables > Actions
-3. Add a new secret called `PROFILE_TOKEN`
-4. Use a Personal Access Token with `repo` scope
+#### Required: ACTIVITY_TOKEN
+For accessing clone/traffic data:
+1. Create a Personal Access Token with `repo` scope
+2. Go to your repository Settings → Secrets and variables → Actions
+3. Add a new secret called `ACTIVITY_TOKEN`
+4. Paste your token
+
+#### Optional: PROFILE_TOKEN
+Only needed if your profile repository is private:
+1. Create another Personal Access Token (or use the same one)
+2. Add a secret called `PROFILE_TOKEN`
 
 ### 4. Enable GitHub Actions
 

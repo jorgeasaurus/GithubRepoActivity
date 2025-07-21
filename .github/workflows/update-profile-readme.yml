@@ -56,6 +56,16 @@ jobs:
             -IncludeLanguageChart `
             -TopReposCount 6
             
+          # Verify the file was created
+          Write-Host "Checking if report file exists..."
+          if (Test-Path "./profile-report-section.md") {
+              Write-Host "Report file created successfully"
+              Write-Host "File size: $((Get-Item "./profile-report-section.md").Length) bytes"
+          } else {
+              Write-Host "ERROR: Report file was not created!"
+              Get-ChildItem -Path . -Name
+          }
+            
       - name: Update README
         shell: pwsh
         run: |
@@ -123,5 +133,7 @@ jobs:
           
           2. The workflow will automatically update the content between these markers.
           
-          3. Optionally, create a \`PROFILE_TOKEN\` secret with a personal access token that has \`repo\` scope for updating your profile repository.
+          3. **Required**: Create an \`ACTIVITY_TOKEN\` secret with a personal access token that has \`repo\` scope to access clone/traffic data.
+          
+          4. **Optional**: If your profile repository is private, create a \`PROFILE_TOKEN\` secret to update it.
           "@ | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding UTF8
