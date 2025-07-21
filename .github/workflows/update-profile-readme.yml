@@ -50,7 +50,7 @@ jobs:
           . ./activity-analyzer/src/Generate-ProfileReport.ps1
           
           # Generate the report with language chart
-          Generate-ProfileReport -GitHubUsername "${{ github.repository_owner }}" `
+          $reportContent = Generate-ProfileReport -GitHubUsername "${{ github.repository_owner }}" `
             -GitHubToken $env:GITHUB_TOKEN `
             -OutputPath "./profile-report-section.md" `
             -IncludeLanguageChart `
@@ -63,7 +63,14 @@ jobs:
               Write-Host "File size: $((Get-Item "./profile-report-section.md").Length) bytes"
           } else {
               Write-Host "ERROR: Report file was not created!"
+              Write-Host "Current directory contents:"
               Get-ChildItem -Path . -Name
+              
+              # Try to save the report content manually
+              if ($reportContent) {
+                  Write-Host "Saving report content manually..."
+                  $reportContent | Out-File -FilePath "./profile-report-section.md" -Encoding UTF8 -NoNewline
+              }
           }
             
       - name: Update README

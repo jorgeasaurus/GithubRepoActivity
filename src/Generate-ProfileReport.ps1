@@ -85,7 +85,14 @@ function Generate-ProfileReport {
     }
     
     $tempJsonPath = Join-Path $tempDir "temp_activity_$(Get-Date -Format 'yyyyMMdd_HHmmss').json"
+    
+    # Ensure we pass all parameters correctly to Get-AllGitHubActivity
+    Write-Host "Fetching GitHub activity data..." -ForegroundColor Gray
     $activityData = Get-AllGitHubActivity -GitHubUsername $GitHubUsername -GitHubToken $GitHubToken -IncludePrivate:$IncludePrivate -OutputPath $tempJsonPath
+    
+    if (-not $activityData) {
+        throw "Failed to fetch GitHub activity data"
+    }
     
     # Start building the markdown report
     $report = @"
