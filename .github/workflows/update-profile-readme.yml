@@ -53,7 +53,7 @@ jobs:
           $reportContent = Generate-ProfileReport -GitHubUsername "${{ github.repository_owner }}" `
             -GitHubToken $env:GITHUB_TOKEN `
             -OutputPath "./profile-report-section.md" `
-            -TopReposCount 6
+            -TopReposCount 9
             
           # Verify the file was created
           Write-Host "Checking if report file exists..."
