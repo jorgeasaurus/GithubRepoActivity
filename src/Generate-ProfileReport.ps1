@@ -30,22 +30,22 @@ function Get-LanguageColor {
     $colors = @{
         "JavaScript" = "f1e05a"
         "TypeScript" = "2b7489"
-        "Python" = "3572A5"
-        "Java" = "b07219"
-        "C#" = "178600"
-        "C++" = "f34b7d"
-        "PHP" = "4F5D95"
-        "Ruby" = "701516"
-        "Go" = "00ADD8"
-        "Rust" = "dea584"
-        "Swift" = "ffac45"
-        "Kotlin" = "F18E33"
+        "Python"     = "3572A5"
+        "Java"       = "b07219"
+        "C#"         = "178600"
+        "C++"        = "f34b7d"
+        "PHP"        = "4F5D95"
+        "Ruby"       = "701516"
+        "Go"         = "00ADD8"
+        "Rust"       = "dea584"
+        "Swift"      = "ffac45"
+        "Kotlin"     = "F18E33"
         "PowerShell" = "012456"
-        "Shell" = "89e051"
-        "HTML" = "e34c26"
-        "CSS" = "563d7c"
-        "Vue" = "4fc08d"
-        "React" = "61dafb"
+        "Shell"      = "89e051"
+        "HTML"       = "e34c26"
+        "CSS"        = "563d7c"
+        "Vue"        = "4fc08d"
+        "React"      = "61dafb"
     }
     
     return $colors[$Language] ?? "858585"
@@ -151,15 +151,15 @@ function Generate-ProfileReport {
 
 ### 🏆 Top Cloned Repositories (Last 14 days)
 
-| Repository | Total Clones | Unique Clones |
-|------------|-------------|---------------|
+| Repository | Total Clones |
+|------------|-------------|
 
 "@
 
     # Add top cloned repositories
     $topByClones | ForEach-Object {
         $repoName = $_.Repository.Split('/')[-1]
-        $report += "| [$repoName](https://github.com/$($_.Repository)) | $(Format-Number $_.TotalClones) | $(Format-Number $_.UniqueClones) |`n"
+        $report += "| [$repoName](https://github.com/$($_.Repository)) | $(Format-Number $_.TotalClones) |`n"
     }
     
     # Recent Activity section
@@ -176,9 +176,9 @@ function Generate-ProfileReport {
 
     # Add recently updated repos
     $recentRepos = $activityData.Repositories | 
-        Where-Object { $_.PushedAt } | 
-        Sort-Object { [DateTime]$_.PushedAt } -Descending | 
-        Select-Object -First 5
+    Where-Object { $_.PushedAt } | 
+    Sort-Object { [DateTime]$_.PushedAt } -Descending | 
+    Select-Object -First 5
         
     foreach ($repo in $recentRepos) {
         $repoName = $repo.Repository.Split('/')[-1]
